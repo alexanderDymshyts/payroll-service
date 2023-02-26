@@ -8,19 +8,22 @@ public abstract class TaxBase
     /// Get progressive tax.
     /// </summary>
     /// <param name="salary">Gross salary.</param>
-    /// <param name="taxBorder">Tax border.</param>
+    /// <param name="taxBoundary">Tax boundary for progressive taxes.</param>
     /// <param name="lowerTaxPercentage">Lower tax percentage.</param>
     /// <param name="higherTaxPercentage">Greater tax percentage.</param>
     /// <returns>Progressive tax.</returns>
-    public virtual decimal GetProgressiveTax(decimal salary, decimal taxBorder, byte lowerTaxPercentage, byte higherTaxPercentage)
+    public virtual decimal GetProgressiveTax(decimal salary, decimal taxBoundary, byte lowerTaxPercentage, byte higherTaxPercentage)
     {
+        if (salary < 0)
+            return 0;
+        
         // Possible loss of fraction, that's why decimal.Divide is used.
         decimal lowerValue = decimal.Divide(lowerTaxPercentage, 100);
         decimal higherValue = decimal.Divide(higherTaxPercentage, 100);
             
-        return salary < taxBorder ? 
+        return salary < taxBoundary ? 
             salary * lowerValue : 
-            (taxBorder * lowerValue) + ((salary - taxBorder) * higherValue);
+            taxBoundary * lowerValue + (salary - taxBoundary) * higherValue;
     }
     
     /// <summary>
@@ -31,6 +34,9 @@ public abstract class TaxBase
     /// <returns>Pension contribution.</returns>
     public virtual decimal GetPensionContribution(decimal salary, byte percentage)
     {
+        if (salary < 0)
+            return 0;
+        
         // Possible loss of fraction, that's why decimal.Divide is used.
         return salary * decimal.Divide(percentage, 100);
     }

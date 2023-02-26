@@ -36,11 +36,11 @@ public class PayrollService: Interfaces.IPayrollService
         
         var result = new PayrollResponse
         {
-            CountryCode = countryCode,
+            CountryCode = countryCode.ToUpperInvariant(),
             GrossSalary = payroll.GetGrossSalary(data.HoursWorked, data.HourlyRate)
         };
 
-        result.TaxesDeductions = payroll.GetTaxDedunctions(result.GrossSalary);
+        result.TaxesDeductions = payroll.GetTaxDeductions(result.GrossSalary);
         result.NetSalary = payroll.GetNetSalary(result.GrossSalary, result.TaxesDeductions);
 
         return result;

@@ -4,9 +4,12 @@ public class SpainTax: TaxBase, Interfaces.IPayroll
 {
     #region Methods
 
-    /// <inheritdoc cref="Interfaces.IPayroll.GetTaxDedunctions"/>
-    public decimal GetTaxDedunctions(decimal grossSalary)
+    /// <inheritdoc cref="Interfaces.IPayroll.GetTaxDeductions"/>
+    public decimal GetTaxDeductions(decimal grossSalary)
     {
+        if (grossSalary < 0)
+            return 0;
+        
         decimal progressiveTax = GetProgressiveTax(grossSalary,600,  25, 40);
         decimal universalSocialChargeTax = GetUniversalSocialCharge(grossSalary - progressiveTax);
         decimal compulsoryPensionTax = GetPensionContribution(grossSalary - progressiveTax - universalSocialChargeTax, 4);
@@ -21,9 +24,7 @@ public class SpainTax: TaxBase, Interfaces.IPayroll
     /// <returns>Social charge tax.</returns>
     private decimal GetUniversalSocialCharge(decimal salary)
     {
-        return salary < 500m ? 
-            salary * 0.07m : 
-            500m * 0.07m + (salary - 500m) * 0.08m;
+        return GetProgressiveTax(salary, 500m, 7, 8);
     }
 
     #endregion Methods
