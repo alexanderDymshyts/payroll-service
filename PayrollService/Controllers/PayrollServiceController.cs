@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Payroll_Service.Classes;
 using Payroll_Service.Interfaces;
 using Payroll_Service.Models.Dto.Incoming;
 using Payroll_Service.Models.Dto.Outcoming;
@@ -28,11 +27,13 @@ public class PayrollServiceController : ControllerBase
     #region Methods
 
     [HttpPost]
-    public ActionResult<PayrollResponse> CalculatePayroll([FromBody] PayrollRequest data)
+    [Route("{countryCode}")]
+    public ActionResult<PayrollResponse> CalculatePayroll(string countryCode, [FromBody] PayrollRequest data)
     {
-        if (string.IsNullOrEmpty(data.CountryCode))
+        if (string.IsNullOrEmpty(countryCode))
             return new BadRequestObjectResult("ISO code not provided.");
-        var result = _payrollService.GetPayroll(data);
+        
+        var result = _payrollService.GetPayroll(countryCode, data);
 
         if (null == result)
             return new BadRequestObjectResult("Ups, something went wrong...");

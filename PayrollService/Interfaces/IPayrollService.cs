@@ -7,7 +7,7 @@ public interface IPayrollService
 {
     #region Methods
 
-    PayrollResponse? GetPayroll(PayrollRequest data);
+    PayrollResponse? GetPayroll(string countryCode, PayrollRequest data);
 
     #endregion Methods
 }

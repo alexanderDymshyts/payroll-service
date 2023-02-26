@@ -1,6 +1,6 @@
-namespace Payroll_Service.Extensions;
+namespace Payroll_Service.Classes;
 
-public static class TaxExtensions
+public abstract class TaxBase
 {
     #region Methods
 
@@ -12,14 +12,15 @@ public static class TaxExtensions
     /// <param name="lowerTaxPercentage">Lower tax percentage.</param>
     /// <param name="higherTaxPercentage">Greater tax percentage.</param>
     /// <returns>Progressive tax.</returns>
-    public static decimal GetProgressiveTax(this decimal salary, decimal taxBorder, byte lowerTaxPercentage, byte higherTaxPercentage)
+    public virtual decimal GetProgressiveTax(decimal salary, decimal taxBorder, byte lowerTaxPercentage, byte higherTaxPercentage)
     {
+        // Possible loss of fraction, that's why decimal.Divide is used.
         decimal lowerValue = decimal.Divide(lowerTaxPercentage, 100);
         decimal higherValue = decimal.Divide(higherTaxPercentage, 100);
             
         return salary < taxBorder ? 
-            decimal.Multiply(salary, lowerValue) : 
-            decimal.Add(decimal.Multiply(taxBorder, lowerValue), decimal.Multiply(decimal.Subtract(salary, taxBorder), higherValue));
+            salary * lowerValue : 
+            (taxBorder * lowerValue) + ((salary - taxBorder) * higherValue);
     }
     
     /// <summary>
@@ -28,10 +29,10 @@ public static class TaxExtensions
     /// <param name="salary">Salary.</param>
     /// <param name="percentage">Defines percentage to pay for pension.</param>
     /// <returns>Pension contribution.</returns>
-    public static decimal GetPensionContribution(this decimal salary, byte percentage)
+    public virtual decimal GetPensionContribution(decimal salary, byte percentage)
     {
-        decimal value = decimal.Divide(percentage, 100);
-        return decimal.Multiply(salary, value);
+        // Possible loss of fraction, that's why decimal.Divide is used.
+        return salary * decimal.Divide(percentage, 100);
     }
    
     #endregion Methods
