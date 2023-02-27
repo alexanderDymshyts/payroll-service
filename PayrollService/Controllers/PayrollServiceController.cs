@@ -6,7 +6,7 @@ using Payroll_Service.Models.Dto.Outcoming;
 namespace Payroll_Service.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class PayrollServiceController : ControllerBase
 {
     #region Variables
